@@ -1,12 +1,18 @@
-import { fetchPages } from "./lib/fetch.js";
+import { extractAll } from "./lib/extract.js";
+import { normalizeBooks } from "./lib/normalize.js";
 
-const URLS = [
+const CATALOGUE_URLS = [
   "https://books.toscrape.com/catalogue/page-1.html",
   "https://books.toscrape.com/catalogue/page-2.html",
   "https://books.toscrape.com/catalogue/page-3.html",
 ];
 
-const results = await fetchPages(URLS);
+const rawBooks = await extractAll(CATALOGUE_URLS);
+const books = normalizeBooks(rawBooks);
 
-const success = results.filter((r) => r !== null).length;
-console.log(`\nFetched ${success}/${URLS.length} pages successfully.`);
+console.log(`\nTotal unique books: ${books.length}`);
+
+console.log("\n--- Sample normalized records ---");
+books.slice(0, 3).forEach((b, i) => {
+  console.log(`\n[${i + 1}]`, JSON.stringify(b, null, 2));
+});
